@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GatherUp - Terms and Conditions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: background-color 0.5s ease;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(15px);
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74,107,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .container:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2.4em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 4px solid #4a6bff;
+            padding-bottom: 15px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+            letter-spacing: 4px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        
+        h1:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2:hover {
+            color: #4a6bff;
+            transform: translateX(5px);
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        h2:hover::after {
+            width: 100%;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section:hover {
+            background-color: rgba(74, 107, 255, 0.05);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.1);
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .section:hover::before {
+            left: 100%;
+        }
+
+        .section p, .section li {
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover p, .section:hover li {
+            color: #2c3e50;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-style: italic;
+            color: #666;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .last-updated:hover {
+            color: #4a6bff;
+            transform: translateX(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .copyright:hover {
+            color: #4a6bff;
+            background-color: rgba(74, 107, 255, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.1);
+        }
+        
+        .copyright::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74,107,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .copyright:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 5px;
+        }
+        
+        ul li:hover {
+            transform: translateX(8px);
+            color: #4a6bff;
+        }
+        
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.3s ease;
+            transform: translateY(-50%);
+        }
+        
+        ul li:hover::before {
+            width: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GatherUp Terms and Conditions</h1>
+        
+        <div class="section">
+            <h2>1. Introduction</h2>
+            <p>Welcome to GatherUp. By accessing and using our platform, you agree to be bound by these Terms and Conditions. GatherUp is a platform designed to facilitate group activities and event organization.</p>
+        </div>
+
+        <div class="section">
+            <h2>2. User Registration</h2>
+            <p>To use GatherUp, users must:</p>
+            <ul>
+                <li>Provide accurate and complete registration information</li>
+                <li>Maintain the security of their account credentials</li>
+                <li>Accept responsibility for all activities under their account</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>3. Event Creation and Participation</h2>
+            <p>Users may create and participate in events subject to the following conditions:</p>
+            <ul>
+                <li>Events must comply with local laws and regulations</li>
+                <li>Event creators must provide accurate event details</li>
+                <li>Participants must respect event guidelines and other attendees</li>
+                <li>GatherUp reserves the right to remove inappropriate events</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Privacy and Data Protection</h2>
+            <p>We are committed to protecting your privacy. Our collection and use of personal data is governed by our Privacy Policy, which is incorporated into these Terms and Conditions.</p>
+        </div>
+
+        <div class="section">
+            <h2>5. User Conduct</h2>
+            <p>Users must not:</p>
+            <ul>
+                <li>Post harmful or inappropriate content</li>
+                <li>Harass or discriminate against other users</li>
+                <li>Use the platform for illegal activities</li>
+                <li>Attempt to breach platform security</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>6. Limitation of Liability</h2>
+            <p>GatherUp is not responsible for:</p>
+            <ul>
+                <li>User-generated content and activities</li>
+                <li>Personal injuries or damages during events</li>
+                <li>Technical issues beyond our reasonable control</li>
+                <li>Third-party services integrated with our platform</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>7. Changes to Terms</h2>
+            <p>GatherUp reserves the right to modify these terms at any time. Users will be notified of significant changes, and continued use of the platform constitutes acceptance of modified terms.</p>
+        </div>
+
+        <div class="copyright">
+            &copy; 2025 GatherUp. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

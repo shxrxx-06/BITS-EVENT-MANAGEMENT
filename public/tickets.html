@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Participation History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            transition: background-color 0.5s ease;
+            background-image: linear-gradient(to bottom right, #f0f2f5, #e6e9ed);
+        }
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px;
+            height: 60px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .navbar:hover {
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
+            margin-right: 20px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .menu-icon:hover {
+            transform: rotate(90deg);
+            color: #4a6bff;
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        .sidebar {
+            width: 280px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: -280px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            transition: left 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            padding-top: 60px;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            position: fixed;
+            top: 0;
+            width: 240px;
+            background-color: #ffffff;
+            z-index: 1001;
+        }
+        .close-icon {
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .close-icon:hover {
+            transform: rotate(90deg);
+            color: #ff4a4a;
+        }
+        .sidebar-item {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .sidebar-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 25px;
+            color: #4a6bff;
+        }
+        .main-content {
+            padding: 20px;
+            margin-left: 0;
+            transition: margin-left 0.4s ease;
+        }
+        .main-content.shifted {
+            margin-left: 280px;
+        }
+        .main-dashboard-text {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .event-history-container {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-history-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .event-card {
+            display: flex;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .event-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .event-details {
+            padding: 15px;
+            flex: 1;
+        }
+        .event-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .event-date, .event-location {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .event-description {
+            font-size: 14px;
+            color: #777;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        .event-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .status-completed {
+            background-color: #e6f7e6;
+            color: #28a745;
+        }
+        .status-upcoming {
+            background-color: #e6f0ff;
+            color: #4a6bff;
+        }
+        .qr-section {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .qr-container {
+            display: inline-block;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .qr-code {
+            width: 200px;
+            height: 200px;
+        }
+        .qr-instructions {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .no-events {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .event-card {
+                flex-direction: column;
+            }
+            .event-image {
+                width: 100%;
+                height: 180px;
+            }
+            .main-content.shifted {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#333" class="group-icon">
+            <path d="M12 5.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM5 12c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm14 0c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-7 3c2.67 0 8 1.34 8 4v1H4v-1c0-2.66 5.33-4 8-4z"/>
+        </svg>
+        <span class="main-dashboard-text">GatherUp</span>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-navbar">
+            <span class="sidebar-dashboard-text">Dashboard</span>
+            <span class="close-icon" onclick="toggleSidebar()">✕</span>
+        </div>
+        <a href="sashboard.html" class="sidebar-item">Home</a>
+        <a href="about_page.html" class="sidebar-item">About Page</a>
+        <a href="history.html" class="sidebar-item">History</a>
+        <a href="aprofile.html" class="sidebar-item">Profile</a>
+        <a href="settings.html" class="sidebar-item">Settings</a>
+        <a href="terms.html" class="sidebar-item">Terms</a>
+        <a href="#" class="sidebar-item" onclick="showLogoutPopup()">Logout</a>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <h1 class="main-dashboard-text">Your Event Participation History</h1>
+        
+        <div class="qr-section">
+            <h2 class="section-title">Event Attendance QR Code</h2>
+            <p>Scan this QR code to mark your attendance for the current event</p>
+            <div class="qr-container">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=StudentID12345-EventID789" alt="Attendance QR Code" class="qr-code">
+            </div>
+            <div class="qr-instructions">
+                <p>Show this QR code to the event organizer to mark your attendance. This QR code is unique to you and the current event.</p>
+                <p>Note: QR code will refresh for each event you participate in.</p>
+            </div>
+        </div>
+
+        <div class="event-history-container">
+            <h2 class="section-title">Past Events</h2>
+            
+            <div class="event-card">
+                <img src="../static/images/event_analytics.jpg" alt="Tech Conference" class="event-image">
+                <div class="event-details">
+                    <div class="event-title">Annual Tech Conference 2023</div>
+                    <div class="event-date">Date: October 15, 2023</div>
+                    <div class="event-location">Location: Main Auditorium</div>
+                    <div class="event-description">A conference focusing on emerging technologies and their applications in various industries. Featured keynote speakers from leading tech companies.</div>
+                    <span class="event-status status-completed">Completed</span>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <img src="../static/images/event_reports.jpg" alt="Leadership Workshop" class="event-image">
+                <div class="event-details">
+                    <div class="event-title">Leadership Workshop</div>
+                    <div class="event-date">Date: September 5, 2023</div>
+                    <div class="event-location">Location: Seminar Hall B</div>
+                    <div class="event-description">An interactive workshop on developing leadership skills, team management, and effective communication strategies for future leaders.</div>
+                    <span class="event-status status-completed">Completed</span>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <img src="../static/images/upcoming_events.jpg" alt="Cultural Fest" class="event-image">
+                <div class="event-details">
+                    <div class="event-title">Annual Cultural Fest</div>
+                    <div class="event-date">Date: August 20, 2023</div>
+                    <div class="event-location">Location: Campus Grounds</div>
+                    <div class="event-description">A celebration of diverse cultures through music, dance, art, and food. Participated in the dance competition and volunteered for event management.</div>
+                    <span class="event-status status-completed">Completed</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="event-history-container">
+            <h2 class="section-title">Upcoming Events You're Registered For</h2>
+            
+            <div class="event-card">
+                <img src="../static/images/event_approval.jpg" alt="Hackathon" class="event-image">
+                <div class="event-details">
+                    <div class="event-title">24-Hour Hackathon Challenge</div>
+                    <div class="event-date">Date: November 10, 2023</div>
+                    <div class="event-location">Location: Computer Science Building</div>
+                    <div class="event-description">A coding marathon where teams will develop innovative solutions to real-world problems. Prizes for the top three teams and networking opportunities with industry professionals.</div>
+                    <span class="event-status status-upcoming">Upcoming</span>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <img src="../static/images/calender.jpg" alt="Career Fair" class="event-image">
+                <div class="event-details">
+                    <div class="event-title">Spring Career Fair</div>
+                    <div class="event-date">Date: December 5, 2023</div>
+                    <div class="event-location">Location: University Center</div>
+                    <div class="event-description">Connect with potential employers from various industries. Bring your resume and be prepared for on-the-spot interviews with participating companies.</div>
+                    <span class="event-status status-upcoming">Upcoming</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="logoutPopup" class="logout-popup">
+        <p>Are you sure you want to logout?<br>Logging out without saving your data may result in loss of your data</p>
+        <button class="yes" onclick="logout()">Yes</button>
+        <button class="no" onclick="hideLogoutPopup()">No</button>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mainContent").classList.toggle("shifted");
+        }
+
+        function showLogoutPopup() {
+            const popup = document.getElementById("logoutPopup");
+            popup.style.display = "block";
+            setTimeout(() => {
+                popup.classList.add("show");
+            }, 10);
+        }
+
+        function hideLogoutPopup() {
+            const popup = document.getElementById("logoutPopup");
+            popup.classList.remove("show");
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 400);
+        }
+
+        function logout() {
+            // Add logout functionality here
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

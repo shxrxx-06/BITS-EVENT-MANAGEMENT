@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('../static/images/back.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(74, 107, 255, 0.2);
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        h2:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 14px;
+        }
+        select:focus, input:focus {
+            border-color: #4a6bff;
+            outline: none;
+            box-shadow: 0 2px 10px rgba(74, 107, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        label {
+            display: block;
+            text-align: left;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        label:hover {
+            color: #4a6bff;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(74, 107, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(74, 107, 255, 0.4);
+            background: linear-gradient(135deg, #3a5bef 0%, #5a7fef 100%);
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        button:hover::after {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        a {
+            color: #4a6bff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        a:hover {
+            color: #3a5bef;
+            transform: translateY(-2px);
+            text-shadow: 0 2px 5px rgba(74, 107, 255, 0.3);
+        }
+        a::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #4a6bff;
+            transition: width 0.3s ease;
+        }
+        a:hover::before {
+            width: 100%;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .error {
+            animation: shake 0.5s ease-in-out;
+            border-color: #f44336 !important;
+            box-shadow: 0 2px 10px rgba(244, 67, 54, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="../static/images/sathyabama logo.jpg" alt="Logo" class="logo">
+        <h2>LOGIN</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userType">User Type</label>
+                <select name="userType" id="userType" required>
+                    <option value="" disabled selected>Select User Type</option>
+                    <option value="admin">Admin</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter your Email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your Password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p><a href="forgot-password.html">Forgot Password?</a></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            let isValid = true;
+
+            // Simple validation with visual feedback
+            if (!userType.value) {
+                userType.classList.add('error');
+                isValid = false;
+                setTimeout(() => userType.classList.remove('error'), 500);
+            }
+            
+            if (!email.value) {
+                email.classList.add('error');
+                isValid = false;
+                setTimeout(() => email.classList.remove('error'), 500);
+            }
+            
+            if (!password.value) {
+                password.classList.add('error');
+                isValid = false;
+                setTimeout(() => password.classList.remove('error'), 500);
+            }
+
+            if (isValid) {
+                // For simplicity, directly redirect to respective dashboard based on user type
+                switch(userType.value) {
+                    case 'admin':
+                        window.location.href = 'dashboard.html'; // Redirect to admin dashboard
+                        break;
+                    case 'faculty':
+                        window.location.href = 'fashboard.html'; // Redirect to faculty dashboard
+                        break;
+                    case 'student':
+                        window.location.href = 'sashboard.html'; // Redirect to student dashboard
+                        break;
+                    default:
+                        alert('Please select a valid user type');
+                }
+            }
+        });
+
+        // Remove error class on input
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.classList.remove('error');
+            });
+        });
+    </script>
+</body>
+</html>

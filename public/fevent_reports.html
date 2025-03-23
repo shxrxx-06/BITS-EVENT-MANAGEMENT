@@ -1,0 +1,353 @@
+<div class="event-reports-container">
+    <h2 class="main-dashboard-text">Submit Your Event Reports</h2>
+    <p>Upload your event report here:</p>
+    <div class="file-upload">
+        <label for="reportUpload" class="upload-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Choose File
+        </label>
+        <input type="file" id="reportUpload" name="reportUpload" accept=".pdf,.docx,.doc" style="display: none;">
+        <span id="fileName"></span>
+    </div>
+    <p class="file-formats">Accepted formats: PDF, DOCX, DOC</p>
+    <button type="button" class="submit-btn" onclick="uploadReport()">Upload Report</button>
+
+    <h3 class="main-dashboard-text">Submitted Reports</h3>
+    <div class="table-container">
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>S No</th>
+                    <th>File Name</th>
+                    <th>Submitted Date</th>
+                </tr>
+            </thead>
+            <tbody id="reportList">
+                <!-- Report list will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .event-reports-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .event-reports-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(74, 107, 255, 0.2);
+    }
+    .main-dashboard-text {
+        font-size: 28px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    .main-dashboard-text::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+        transition: width 0.5s ease;
+    }
+    .main-dashboard-text:hover::after {
+        width: 100%;
+        box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+    }
+    .main-dashboard-text:hover {
+        transform: scale(1.03);
+        text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+        letter-spacing: 0.5px;
+    }
+    .file-upload {
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+    }
+    .upload-label {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+    }
+    .upload-label::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+    }
+    .upload-label:hover::after {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    .upload-label:hover {
+        background: linear-gradient(135deg, #e6e9ed 0%, #f0f2f5 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(74, 107, 255, 0.15);
+        border-color: #4a6bff;
+    }
+    .upload-label svg {
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+    }
+    .upload-label:hover svg {
+        transform: translateY(-2px);
+        color: #4a6bff;
+    }
+    #fileName {
+        margin-left: 15px;
+        font-style: italic;
+        color: #555;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+        background-color: rgba(74, 107, 255, 0.05);
+        border-radius: 4px;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #fileName:not(:empty) {
+        border-left: 3px solid #4a6bff;
+    }
+    .file-formats {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+    }
+    .submit-btn {
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    .submit-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+    }
+    .submit-btn:hover::after {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    }
+    .table-container {
+        margin-top: 30px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    .table-container:hover {
+        box-shadow: 0 8px 25px rgba(74, 107, 255, 0.15);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
+    th, td {
+        border: 1px solid #e6e9ed;
+        padding: 12px 15px;
+        text-align: left;
+        transition: all 0.3s ease;
+    }
+    th {
+        background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+        color: #333;
+        font-weight: 600;
+    }
+    tbody tr {
+        transition: all 0.3s ease;
+    }
+    tbody tr:hover {
+        background-color: rgba(74, 107, 255, 0.05);
+        transform: translateX(5px);
+    }
+    tbody tr:hover td {
+        border-left: 3px solid #4a6bff;
+    }
+</style>
+
+<script>
+    let reports = [];
+
+    document.getElementById('reportUpload').addEventListener('change', function(e) {
+        const fileName = e.target.files[0].name;
+        const fileNameElement = document.getElementById('fileName');
+        fileNameElement.textContent = fileName;
+        fileNameElement.style.transform = "scale(0)";
+        setTimeout(() => {
+            fileNameElement.style.transform = "scale(1)";
+        }, 10);
+    });
+
+    function uploadReport() {
+        const fileInput = document.getElementById('reportUpload');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const newReport = {
+                fileName: file.name,
+                submittedDate: new Date().toLocaleString()
+            };
+            reports.push(newReport);
+            updateReportList();
+            fileInput.value = ''; // Clear the file input
+            
+            // Animate file name removal
+            const fileNameElement = document.getElementById('fileName');
+            fileNameElement.style.transform = "translateX(50px)";
+            fileNameElement.style.opacity = "0";
+            setTimeout(() => {
+                fileNameElement.textContent = '';
+                fileNameElement.style.transform = "translateX(0)";
+                fileNameElement.style.opacity = "1";
+            }, 300);
+            
+            // Show success message with animation
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = 'Report uploaded successfully!';
+            successMessage.style.position = 'fixed';
+            successMessage.style.top = '20px';
+            successMessage.style.left = '50%';
+            successMessage.style.transform = 'translateX(-50%) translateY(-100px)';
+            successMessage.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            successMessage.style.color = 'white';
+            successMessage.style.padding = '15px 30px';
+            successMessage.style.borderRadius = '30px';
+            successMessage.style.boxShadow = '0 5px 15px rgba(76, 175, 80, 0.4)';
+            successMessage.style.zIndex = '1000';
+            successMessage.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+            
+            document.body.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                successMessage.style.transform = 'translateX(-50%) translateY(-100px)';
+                setTimeout(() => {
+                    document.body.removeChild(successMessage);
+                }, 400);
+            }, 3000);
+        } else {
+            // Show error message with animation
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = 'Please select a file to upload.';
+            errorMessage.style.position = 'fixed';
+            errorMessage.style.top = '20px';
+            errorMessage.style.left = '50%';
+            errorMessage.style.transform = 'translateX(-50%) translateY(-100px)';
+            errorMessage.style.background = 'linear-gradient(135deg, #f44336 0%, #e53935 100%)';
+            errorMessage.style.color = 'white';
+            errorMessage.style.padding = '15px 30px';
+            errorMessage.style.borderRadius = '30px';
+            errorMessage.style.boxShadow = '0 5px 15px rgba(244, 67, 54, 0.4)';
+            errorMessage.style.zIndex = '1000';
+            errorMessage.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+            
+            document.body.appendChild(errorMessage);
+            
+            setTimeout(() => {
+                errorMessage.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                errorMessage.style.transform = 'translateX(-50%) translateY(-100px)';
+                setTimeout(() => {
+                    document.body.removeChild(errorMessage);
+                }, 400);
+            }, 3000);
+        }
+    }
+
+    function updateReportList() {
+        const reportList = document.getElementById('reportList');
+        reportList.innerHTML = '';
+        reports.forEach((report, index) => {
+            const row = document.createElement('tr');
+            row.style.opacity = "0";
+            row.style.transform = "translateY(20px)";
+            
+            const cellSNo = document.createElement('td');
+            const cellFileName = document.createElement('td');
+            const cellSubmittedDate = document.createElement('td');
+            
+            cellSNo.textContent = index + 1;
+            cellFileName.textContent = report.fileName;
+            cellSubmittedDate.textContent = report.submittedDate;
+            
+            row.appendChild(cellSNo);
+            row.appendChild(cellFileName);
+            row.appendChild(cellSubmittedDate);
+            
+            reportList.appendChild(row);
+            
+            setTimeout(() => {
+                row.style.opacity = "1";
+                row.style.transform = "translateY(0)";
+                row.style.transition = "all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) " + (index * 0.1) + "s";
+            }, 10);
+        });
+    }
+</script>

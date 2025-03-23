@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Approval</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            transition: background-color 0.5s ease;
+            background-image: linear-gradient(to bottom right, #f0f2f5, #e6e9ed);
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .container:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        h1:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+            letter-spacing: 1px;
+        }
+        h2 {
+            color: #4a6bff;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        h2:hover {
+            transform: translateX(10px);
+            text-shadow: 0 0 5px rgba(74, 107, 255, 0.3);
+        }
+        .event-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .event-item {
+            background-color: rgba(249, 249, 249, 0.8);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-left: 4px solid transparent;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .event-item:hover {
+            background-color: rgba(74, 107, 255, 0.1);
+            transform: translateX(10px);
+            border-left: 4px solid #4a6bff;
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.2);
+        }
+        .event-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        .event-item:hover::before {
+            left: 100%;
+        }
+        .event-name {
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        .event-item:hover .event-name {
+            color: #4a6bff;
+        }
+        .event-date {
+            color: #666;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        .event-item:hover .event-date {
+            color: #4a6bff;
+            transform: translateX(5px);
+        }
+        .event-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(74, 107, 255, 0.2);
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform-origin: top;
+            transform: scaleY(0);
+            opacity: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .event-details.show {
+            transform: scaleY(1);
+            opacity: 1;
+        }
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .action-buttons button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .action-buttons button:hover::after {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        .action-buttons button:hover {
+            transform: translateY(-3px);
+        }
+        .approve-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        .approve-btn:hover {
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        .deny-btn {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+        .deny-btn:hover {
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+        .comment-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1e88e5 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+        }
+        .comment-btn:hover {
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.show {
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            backdrop-filter: blur(10px);
+        }
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .close:hover,
+        .close:focus {
+            color: #4a6bff;
+            text-decoration: none;
+            transform: rotate(90deg);
+        }
+        #confirmApprove, #confirmDeny, #sendComment, #cancelApprove, #cancelDeny {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            margin-right: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #confirmApprove {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        #confirmApprove:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        #cancelApprove {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+        #cancelApprove:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+        #confirmDeny {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+        #confirmDeny:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+        #cancelDeny {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        #cancelDeny:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        #sendComment {
+            background: linear-gradient(135deg, #2196F3 0%, #1e88e5 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+        }
+        #sendComment:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
+        }
+        #commentText {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #commentText:focus {
+            border-color: #4a6bff;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.2);
+            outline: none;
+        }
+        .modal p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Event Approval</h1>
+        <h2>To be Approved</h2>
+        <ul class="event-list" id="eventList">
+            <!-- Event items will be dynamically added here -->
+        </ul>
+    </div>
+
+    <!-- Approval Modal -->
+    <div id="approvalModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to approve this event?</p>
+            <button id="confirmApprove">APPROVE</button>
+            <button id="cancelApprove">NO</button>
+        </div>
+    </div>
+
+    <!-- Denial Modal -->
+    <div id="denialModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to deny this event?</p>
+            <button id="confirmDeny">DENY</button>
+            <button id="cancelDeny">DON'T DENY</button>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <textarea id="commentText" placeholder="Enter your comments for changes" rows="4"></textarea>
+            <button id="sendComment">Send for Change</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample event data (replace with actual data from your backend)
+        const events = [
+            { id: 1, name: "Tech Conference 2023", date: "2023-09-15", details: "Annual technology conference featuring keynote speakers and workshops." },
+            { id: 2, name: "Charity Gala", date: "2023-10-01", details: "Fundraising event for local charities with dinner and silent auction." },
+            { id: 3, name: "Music Festival", date: "2023-08-20", details: "Three-day outdoor music festival featuring various genres and artists." }
+        ];
+
+        const eventList = document.getElementById('eventList');
+        const approvalModal = document.getElementById('approvalModal');
+        const denialModal = document.getElementById('denialModal');
+        const commentModal = document.getElementById('commentModal');
+        let currentEventId = null;
+
+        function displayEvents() {
+            if (events.length === 0) {
+                eventList.innerHTML = "<p>No event forms to be approved.</p>";
+            } else {
+                events.forEach(event => {
+                    const li = document.createElement('li');
+                    li.className = 'event-item';
+                    li.innerHTML = `
+                        <div class="event-name">${event.name}</div>
+                        <div class="event-date">${event.date}</div>
+                        <div class="event-details">
+                            <p>${event.details}</p>
+                            <div class="action-buttons">
+                                <button class="approve-btn" onclick="approveEvent(${event.id})">Approve</button>
+                                <button class="deny-btn" onclick="denyEvent(${event.id})">Deny</button>
+                                <button class="comment-btn" onclick="commentEvent(${event.id})">Comment for Change</button>
+                            </div>
+                        </div>
+                    `;
+                    li.addEventListener('click', function(e) {
+                        if (!e.target.classList.contains('approve-btn') && 
+                            !e.target.classList.contains('deny-btn') && 
+                            !e.target.classList.contains('comment-btn')) {
+                            const details = this.querySelector('.event-details');
+                            if (details.style.display === 'none' || details.style.display === '') {
+                                details.style.display = 'block';
+                                setTimeout(() => {
+                                    details.classList.add('show');
+                                }, 10);
+                            } else {
+                                details.classList.remove('show');
+                                setTimeout(() => {
+                                    details.style.display = 'none';
+                                }, 300);
+                            }
+                        }
+                    });
+                    eventList.appendChild(li);
+                });
+            }
+        }
+
+        function approveEvent(id) {
+            currentEventId = id;
+            approvalModal.style.display = "block";
+            setTimeout(() => {
+                approvalModal.classList.add('show');
+            }, 10);
+            // Here you would typically send an approval request to your backend
+        }
+
+        function denyEvent(id) {
+            currentEventId = id;
+            denialModal.style.display = "block";
+            setTimeout(() => {
+                denialModal.classList.add('show');
+            }, 10);
+            // The actual denial would happen when the user confirms in the modal
+        }
+
+        function commentEvent(id) {
+            currentEventId = id;
+            commentModal.style.display = "block";
+            setTimeout(() => {
+                commentModal.classList.add('show');
+            }, 10);
+            // The comment would be sent when the user clicks "Send for Change" in the modal
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        }
+
+        // Close modal when clicking on <span> (x)
+        document.querySelectorAll('.close').forEach(span => {
+            span.onclick = function() {
+                closeModal(this.closest('.modal'));
+            }
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target);
+            }
+        }
+
+        // Confirm approve button
+        document.getElementById('confirmApprove').onclick = function() {
+            // Here you would typically send an approval request to your backend
+            console.log(`Event ${currentEventId} approved`);
+            closeModal(approvalModal);
+            // You might want to remove the approved event from the list
+            // or update its status
+        }
+
+        // Cancel approve button
+        document.getElementById('cancelApprove').onclick = function() {
+            closeModal(approvalModal);
+        }
+
+        // Confirm deny button
+        document.getElementById('confirmDeny').onclick = function() {
+            // Here you would typically send a denial request to your backend
+            console.log(`Event ${currentEventId} denied`);
+            closeModal(denialModal);
+            // You might want to remove the denied event from the list
+            // or update its status
+        }
+
+        // Cancel deny button
+        document.getElementById('cancelDeny').onclick = function() {
+            closeModal(denialModal);
+        }
+
+        // Send comment button
+        document.getElementById('sendComment').onclick = function() {
+            const comment = document.getElementById('commentText').value;
+            // Here you would typically send the comment to your backend
+            console.log(`Comment for event ${currentEventId}: ${comment}`);
+            closeModal(commentModal);
+            document.getElementById('commentText').value = ''; // Clear the textarea
+        }
+
+        // Display events when the page loads
+        displayEvents();
+    </script>
+</body>
+</html>

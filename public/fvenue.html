@@ -1,0 +1,553 @@
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f2f5;
+        transition: background-color 0.5s ease;
+        background-image: linear-gradient(to bottom right, #f0f2f5, #e6e9ed);
+    }
+    .navbar {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: #ffffff;
+        color: #333;
+        padding: 20px;
+        height: 60px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+    .navbar:hover {
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        transform: translateY(-3px);
+    }
+    .navbar a {
+        color: #333;
+        text-decoration: none;
+        font-size: 20px;
+        margin-left: 15px;
+        transition: color 0.3s ease;
+    }
+    .navbar a:hover {
+        color: #4a6bff;
+    }
+    .navbar .menu-icon {
+        cursor: pointer;
+        font-size: 24px;
+        margin-right: 20px;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .navbar .menu-icon:hover {
+        transform: rotate(90deg);
+        color: #4a6bff;
+        text-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+    }
+    .sidebar {
+        width: 280px;
+        height: 100%;
+        position: fixed;
+        z-index: 1001;
+        top: 0;
+        left: -280px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        padding-top: 100px;
+        font-size: 24px;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+    }
+    .sidebar.open {
+        left: 0;
+        transform: translateX(0);
+    }
+    .sidebar a {
+        padding: 15px 25px;
+        display: block;
+        transition: all 0.3s ease;
+        color: #333;
+        text-decoration: none;
+        border-left: 4px solid transparent;
+        margin: 5px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .sidebar a:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.2), transparent);
+        transition: all 0.5s ease;
+    }
+    .sidebar a:hover:before {
+        left: 100%;
+    }
+    .sidebar a:hover {
+        background-color: rgba(74, 107, 255, 0.1);
+        transform: translateX(10px);
+        border-left: 4px solid #4a6bff;
+        color: #4a6bff;
+        box-shadow: 0 5px 15px rgba(74, 107, 255, 0.2);
+    }
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+        transition: transform 0.3s ease;
+    }
+    .sidebar .closebtn:hover {
+        transform: rotate(90deg);
+        text-shadow: 0 0 10px rgba(74, 107, 255, 0.8);
+    }
+    .venue-form {
+        max-width: 600px;
+        margin: 100px auto 40px;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+    .venue-form:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(74, 107, 255, 0.15);
+    }
+    .venue-form h2 {
+        text-align: center;
+        color: #4a6bff;
+        margin-bottom: 30px;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .venue-form h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, #4a6bff, #6a8fff);
+        border-radius: 3px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        transition: color 0.3s ease;
+    }
+    .form-group:hover label {
+        color: #4a6bff;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: #4a6bff;
+        outline: none;
+        box-shadow: 0 0 10px rgba(74, 107, 255, 0.2);
+        background-color: #fff;
+    }
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #3a5bef 0%, #5a7fef 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3);
+    }
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+    .submit-btn:after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+    }
+    .submit-btn:hover:after {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 30px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+        border-radius: 15px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        transform: scale(0.8);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal.show .modal-content {
+        transform: scale(1);
+        opacity: 1;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .close:hover,
+    .close:focus {
+        color: #4a6bff;
+        text-decoration: none;
+        transform: rotate(90deg);
+    }
+    .slide-page {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1003;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+        overflow-x: hidden;
+        transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        padding-top: 60px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    }
+    .slide-page .closebtn {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        font-size: 36px;
+        margin-left: 50px;
+        background-color: #f0f2f5;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .slide-page .closebtn:hover {
+        background-color: #4a6bff;
+        color: white;
+        transform: scale(1.1) rotate(180deg);
+        box-shadow: 0 8px 25px rgba(74, 107, 255, 0.3);
+    }
+    .slide-page-content {
+        padding: 30px;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+        transition-delay: 0.2s;
+    }
+    .slide-page.open .slide-page-content {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .no-bookings-image {
+        max-width: 100%;
+        height: auto;
+        margin-top: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    .no-bookings-image:hover {
+        transform: scale(1.05);
+    }
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .form-row .form-group {
+        width: 48%;
+    }
+    /* Glowing effect for interactive elements */
+    .menu-icon, .closebtn, .submit-btn, .sidebar a {
+        position: relative;
+        overflow: hidden;
+    }
+    .menu-icon::after, .closebtn::after, .submit-btn::after, .sidebar a::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        transform: scale(0.5);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+    }
+    .menu-icon:hover::after, .closebtn:hover::after, .submit-btn:hover::after, .sidebar a:hover::after {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+</style>
+
+<div class="navbar">
+    <span class="menu-icon" onclick="openNav()">&#9776;</span>
+    <a href="#home">GatherUp - Venue Booking System</a>
+</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#" onclick="openSlidePage('bookingStatus')">Your Booking Status</a>
+    <a href="#" onclick="openSlidePage('bookingHistory')">Booking History</a>
+</div>
+
+<div id="bookingStatusPage" class="slide-page">
+    <span class="closebtn" onclick="closeSlidePage('bookingStatus')">&lt;</span>
+    <div class="slide-page-content">
+        <h2>Booking Status</h2>
+        <div id="bookingStatusContent">
+            <!-- Booking status content will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<div id="bookingHistoryPage" class="slide-page">
+    <span class="closebtn" onclick="closeSlidePage('bookingHistory')">&lt;</span>
+    <div class="slide-page-content">
+        <h2>Booking History</h2>
+        <div id="bookingHistoryContent">
+            <!-- Booking history content will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<div class="venue-form">
+    <h2>Venue Booking Form</h2>
+    <form id="venueBookingForm">
+        <div class="form-group">
+            <label for="eventName">Event Name:</label>
+            <input type="text" id="eventName" name="eventName" required>
+        </div>
+        <div class="form-group">
+            <label for="eventDate">Event Date:</label>
+            <input type="date" id="eventDate" name="eventDate" required>
+        </div>
+        <div class="form-group">
+            <label for="eventVenue">Event Venue:</label>
+            <input type="text" id="eventVenue" name="eventVenue" required>
+        </div>
+        <div class="form-group">
+            <label for="participantCapacity">Expected Participant Capacity:</label>
+            <input type="number" id="participantCapacity" name="participantCapacity" min="1" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="eventTimingFrom">Event Timing From:</label>
+                <input type="time" id="eventTimingFrom" name="eventTimingFrom" required>
+            </div>
+            <div class="form-group">
+                <label for="eventTimingTo">Event Timing To:</label>
+                <input type="time" id="eventTimingTo" name="eventTimingTo" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="eventDuration">Duration of Event (in hours):</label>
+            <input type="number" id="eventDuration" name="eventDuration" min="0.5" step="0.5" required>
+        </div>
+        <div class="form-group">
+            <label for="numberOfDays">Number of Days:</label>
+            <input type="number" id="numberOfDays" name="numberOfDays" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="facultyCoordinators">Faculty Co-ordinators:</label>
+            <textarea id="facultyCoordinators" name="facultyCoordinators" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="studentCoordinators">Student Co-ordinators:</label>
+            <textarea id="studentCoordinators" name="studentCoordinators" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="posterUpload">Upload Poster (jpg, jpeg, png, pdf):</label>
+            <input type="file" id="posterUpload" name="posterUpload" accept=".jpg,.jpeg,.png,.pdf" required>
+        </div>
+        <button type="submit" class="submit-btn">Apply for Venue</button>
+    </form>
+</div>
+
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Your venue booking application was applied successfully. Wait for confirmation. Have a good day!</p>
+    </div>
+</div>
+
+<script>
+    let bookings = [];
+
+    function openNav() {
+        document.getElementById("mySidebar").classList.add("open");
+        document.getElementById("mySidebar").style.width = "280px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").classList.remove("open");
+        document.getElementById("mySidebar").style.width = "0";
+    }
+
+    function openSlidePage(page) {
+        const slidePage = document.getElementById(page + "Page");
+        slidePage.style.width = "100%";
+        setTimeout(() => {
+            slidePage.classList.add("open");
+        }, 100);
+        
+        if (page === 'bookingHistory') {
+            displayBookingHistory();
+        } else if (page === 'bookingStatus') {
+            displayBookingStatus();
+        }
+    }
+
+    function closeSlidePage(page) {
+        const slidePage = document.getElementById(page + "Page");
+        slidePage.classList.remove("open");
+        setTimeout(() => {
+            slidePage.style.width = "0";
+        }, 300);
+    }
+
+    function displayBookingHistory() {
+        const historyContent = document.getElementById('bookingHistoryContent');
+        if (bookings.length === 0) {
+            historyContent.innerHTML = `
+                <p>You haven't booked so far. Why not today? Be the first!</p>
+                <div style="text-align: center;">
+                    <img src="booking_history.jpg" alt="No Booking History" class="no-bookings-image" style="width: 200px; height: auto;">
+                </div>
+            `;
+        } else {
+            let html = "<ul style='list-style-type: none; padding: 0;'>";
+            bookings.forEach(booking => {
+                html += `<li style='background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: all 0.3s ease;'>${booking.eventName} - ${booking.eventDate} <span style='color: #4a6bff; font-weight: bold;'>(${booking.status})</span></li>`;
+            });
+            html += "</ul>";
+            historyContent.innerHTML = html;
+        }
+    }
+
+    function displayBookingStatus() {
+        const statusContent = document.getElementById('bookingStatusContent');
+        if (bookings.length === 0) {
+            statusContent.innerHTML = `
+                <p>No current bookings.</p>
+                <div style="text-align: center;">
+                    <img src="booking_status.jpg" alt="No Booking Status" class="no-bookings-image" style="width: 200px; height: auto;">
+                </div>
+            `;
+        } else {
+            let html = "<ul style='list-style-type: none; padding: 0;'>";
+            bookings.forEach(booking => {
+                html += `<li style='background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: all 0.3s ease;'>${booking.eventName} - ${booking.eventDate} <span style='color: #4a6bff; font-weight: bold;'>(${booking.status})</span></li>`;
+            });
+            html += "</ul>";
+            statusContent.innerHTML = html;
+        }
+    }
+
+    document.getElementById('venueBookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const newBooking = {
+            eventName: formData.get('eventName'),
+            eventDate: formData.get('eventDate'),
+            status: 'Applied'
+        };
+        bookings.push(newBooking);
+        var modal = document.getElementById('successModal');
+        modal.style.display = "block";
+        modal.classList.add("show");
+        this.reset();
+    });
+
+    var modal = document.getElementById('successModal');
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.classList.remove("show");
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 400);
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 400);
+        }
+    }
+</script>

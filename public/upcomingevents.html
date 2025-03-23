@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .event {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #4CAF50;
+            background-color: #f9f9f9;
+        }
+        .event h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .event-date {
+            font-weight: bold;
+            color: #666;
+        }
+        .event-location {
+            font-style: italic;
+            color: #777;
+        }
+        .event-poster {
+            width: 100%;
+            max-height: 400px;
+            aspect-ratio: 837/1200;
+            object-fit: contain;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .chat-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9f7ef;
+            border-radius: 8px;
+        }
+        .room-code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .chat-box {
+            height: 300px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 4px;
+        }
+        .message-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .send-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .send-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upcoming Events</h1>
+        
+        <div class="event">
+            <img src="/assets/images/culturals.png" alt="Culturals Poster" class="event-poster">
+            <p class="event-date">Date: November 15, 2023 | 9:00 AM - 5:00 PM</p>
+            <p class="event-location">Location: Main Conference Hall</p>
+        </div>
+        
+        <div class="event">
+            <img src="/assets/images/christmas.png" alt="Christmas Poster" class="event-poster">
+            <p class="event-date">Date: December 5, 2023 | 2:00 PM - 6:00 PM</p>
+            <p class="event-location">Location: Innovation Lab</p>
+        </div>
+        <div class="chat-section">
+            <h2>Event Chat Room</h2>
+            <p>Use the room code below to join the conversation:</p>
+            <div class="room-code">EVENT-2023</div>
+            
+            <div class="chat-box" id="chatBox">
+                <!-- Chat messages will appear here -->
+                <p><strong>System:</strong> Welcome to the event chat room!</p>
+            </div>
+            
+            <input type="text" class="message-input" id="messageInput" placeholder="Type your message here...">
+            <button class="send-button" id="sendButton">Send Message</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBox = document.getElementById('chatBox');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            
+            sendButton.addEventListener('click', function() {
+                sendMessage();
+            });
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    const messageElement = document.createElement('p');
+                    messageElement.innerHTML = `<strong>You:</strong> ${message}`;
+                    chatBox.appendChild(messageElement);
+                    messageInput.value = '';
+                    
+                    // Auto-scroll to the bottom of the chat box
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

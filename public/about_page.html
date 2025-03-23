@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About GatherUp</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: background-color 0.5s ease;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(15px);
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            margin: 80px auto 40px auto;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74,107,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .container:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 35px;
+            font-size: 2.4em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 4px solid #4a6bff;
+            padding-bottom: 15px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+            letter-spacing: 4px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        
+        h1:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2:hover {
+            color: #4a6bff;
+            transform: translateX(5px);
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        h2:hover::after {
+            width: 100%;
+        }
+
+        p {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px;
+        }
+        
+        p:hover {
+            color: #2c3e50;
+            transform: translateY(-3px);
+        }
+
+        .features {
+            list-style-type: none;
+            padding-left: 20px;
+            font-size: 1.1em;
+            color: #333;
+            text-align: left;
+        }
+        
+        .features li {
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 5px;
+        }
+        
+        .features li:hover {
+            transform: translateX(8px);
+            color: #4a6bff;
+        }
+        
+        .features li::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.3s ease;
+            transform: translateY(-50%);
+        }
+        
+        .features li:hover::before {
+            width: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 40px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer:hover {
+            color: #4a6bff;
+            background-color: rgba(74, 107, 255, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.1);
+        }
+        
+        .footer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74,107,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .footer:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Navbar styles */
+        .navbar {
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 200;
+            transform: translateX(-100%);
+        }
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            color: white;
+        }
+        .sidebar-menu {
+            padding: 0;
+            list-style: none;
+        }
+        .sidebar-menu li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        .sidebar-menu li:hover {
+            background-color: rgba(74, 107, 255, 0.1);
+            padding-left: 25px;
+        }
+        .sidebar-menu a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        .sidebar-menu a:hover {
+            color: #4a6bff;
+        }
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 150;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        /* Adjust main content when sidebar is open */
+        .content-wrapper {
+            transition: all 0.3s ease;
+            padding-top: 0;
+        }
+        .content-wrapper.shifted {
+            margin-left: 250px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <a href="#" class="navbar-brand">GatherUp</a>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>GatherUp Menu</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">Home</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Overlay for sidebar -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="content-wrapper" id="contentWrapper">
+        <div class="container">
+            <h1>About GatherUp</h1>
+            <p>GatherUp is a platform designed to simplify and enhance group activity organization. Whether you're a student, faculty member, or administrator, GatherUp provides a seamless way to create, manage, and participate in events.</p>
+            
+            <h2>Key Features</h2>
+            <ul class="features">
+                <li>Effortless event creation and management</li>
+                <li>User roles: Student, Faculty, and Admin</li>
+                <li>Secure login and authentication system</li>
+                <li>Personalized profile pages</li>
+                <li>Privacy-focused and user-friendly design</li>
+            </ul>
+            
+            <p>GatherUp aims to foster collaboration, engagement, and efficiency in organizing group events, making it easier for communities to come together.</p>
+            
+            <div class="footer">
+                &copy; 2025 GatherUp. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const contentWrapper = document.getElementById('contentWrapper');
+
+        // Sidebar toggle functionality
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            contentWrapper.classList.toggle('shifted');
+        });
+
+        // Close sidebar when clicking on overlay
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            contentWrapper.classList.remove('shifted');
+        });
+    </script>
+</body>
+</html>

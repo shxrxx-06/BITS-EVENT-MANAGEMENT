@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            transition: background-color 0.5s ease;
+            background-image: linear-gradient(to bottom right, #f0f2f5, #e6e9ed);
+        }
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px;
+            height: 60px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .navbar:hover {
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
+            margin-right: 20px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .menu-icon:hover {
+            transform: rotate(90deg);
+            color: #4a6bff;
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        .sidebar {
+            width: 280px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: -280px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding-top: 100px;
+            z-index: 1000;
+            font-size: 24px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .sidebar.open {
+            left: 0;
+            transform: translateX(0);
+        }
+        .sidebar-item {
+            padding: 15px 25px;
+            display: block;
+            transition: all 0.3s ease;
+            color: #333;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            margin: 5px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar-item:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        .sidebar-item:hover:before {
+            left: 100%;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(74, 107, 255, 0.1);
+            transform: translateX(10px);
+            border-left: 4px solid #4a6bff;
+            color: #4a6bff;
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.2);
+        }
+        .sidebar-navbar {
+            background: linear-gradient(135deg, #4a6bff 0%, #ffffff00 100%);
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .close-icon {
+            cursor: pointer;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+        .close-icon:hover {
+            transform: rotate(90deg);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .main-content {
+            transition: margin-left 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding: 20px;
+            display: flex;
+        }
+        .main-content.shifted {
+            margin-left: 280px;
+        }
+        .dashboard-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 25px;
+            padding: 10px;
+        }
+        .dashboard-item {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .dashboard-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .dashboard-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+        .dashboard-item:hover img {
+            transform: scale(1.1);
+        }
+        .dashboard-item .text-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 15px;
+            transform: skew(-10deg) translateY(100%);
+            transform-origin: bottom left;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .dashboard-item:hover .text-container {
+            transform: skew(-10deg) translateY(0);
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .search-container input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px 0 0 25px;
+            width: 220px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 14px;
+        }
+        .search-container input:focus {
+            width: 250px;
+            border-color: #4a6bff;
+            outline: none;
+            box-shadow: 0 2px 10px rgba(74, 107, 255, 0.2);
+        }
+        .search-container button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            color: white;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .search-container button:hover {
+            background: linear-gradient(135deg, #3a5bef 0%, #5a7fef 100%);
+            transform: translateX(3px);
+            box-shadow: 0 0 15px rgba(74, 107, 255, 0.5);
+        }
+        .main-dashboard-text {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .main-dashboard-text:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+            letter-spacing: 1px;
+        }
+        .sidebar-dashboard-text {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .sidebar.open .sidebar-dashboard-text {
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+        }
+        .logout-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 400px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .logout-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .logout-popup p {
+            margin-bottom: 25px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .logout-popup button {
+            margin: 0 10px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .logout-popup button.yes {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        .logout-popup button.yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+        .logout-popup button.no {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+        .logout-popup button.no:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+        .event-approval-container, .event-analytics-container, .event-reports-container, .upcoming-events-container, .calendar-container, .venue-booking-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            display: inline-block;
+            margin-right: 20px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .event-approval-container:hover, .event-analytics-container:hover, .event-reports-container:hover, .upcoming-events-container:hover, .calendar-container:hover, .venue-booking-container:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2), 0 0 20px rgba(74, 107, 255, 0.4);
+        }
+        .event-approval-container img, .event-analytics-container img, .event-reports-container img, .upcoming-events-container img, .calendar-container img, .venue-booking-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+        .event-approval-overlay, .event-analytics-overlay, .event-reports-overlay, .upcoming-events-overlay, .calendar-overlay, .venue-booking-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4), transparent);
+            padding: 20px;
+            text-align: center;
+            height: 40%;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .event-approval-container:hover .event-approval-overlay,
+        .event-analytics-container:hover .event-analytics-overlay,
+        .event-reports-container:hover .event-reports-overlay,
+        .upcoming-events-container:hover .upcoming-events-overlay,
+        .calendar-container:hover .calendar-overlay,
+        .venue-booking-container:hover .venue-booking-overlay {
+            transform: translateY(0);
+        }
+        .event-approval-container:hover img,
+        .event-analytics-container:hover img,
+        .event-reports-container:hover img,
+        .upcoming-events-container:hover img,
+        .calendar-container:hover img,
+        .venue-booking-container:hover img {
+            transform: scale(1.1);
+            filter: brightness(0.7) blur(2px);
+        }
+        .event-approval-overlay span,
+        .event-analytics-overlay span,
+        .event-reports-overlay span,
+        .upcoming-events-overlay span,
+        .calendar-overlay span,
+        .venue-booking-overlay span {
+            font-size: 24px;
+            font-weight: 900;
+            color: #fff;
+            display: block;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease 0.1s;
+        }
+        .event-approval-container:hover .event-approval-overlay span,
+        .event-analytics-container:hover .event-analytics-overlay span,
+        .event-reports-container:hover .event-reports-overlay span,
+        .upcoming-events-container:hover .upcoming-events-overlay span,
+        .calendar-container:hover .calendar-overlay span,
+        .venue-booking-container:hover .venue-booking-overlay span {
+            transform: translateY(0);
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .event-approval-overlay::after,
+        .event-analytics-overlay::after,
+        .event-reports-overlay::after,
+        .upcoming-events-overlay::after,
+        .calendar-overlay::after,
+        .venue-booking-overlay::after {
+            content: '→';
+            display: block;
+            font-size: 28px;
+            margin-top: 10px;
+            color: #fff;
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.4s ease 0.2s;
+        }
+        .event-approval-container:hover .event-approval-overlay::after,
+        .event-analytics-container:hover .event-analytics-overlay::after,
+        .event-reports-container:hover .event-reports-overlay::after,
+        .upcoming-events-container:hover .upcoming-events-overlay::after,
+        .calendar-container:hover .calendar-overlay::after,
+        .venue-booking-container:hover .venue-booking-overlay::after {
+            transform: translateX(0);
+            opacity: 1;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        .search-sidebar {
+            width: 220px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-left: 1px solid rgba(0,0,0,0.05);
+            border-radius: 15px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            margin-left: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .search-sidebar:hover {
+            box-shadow: -8px 0 20px rgba(0,0,0,0.1);
+            transform: translateX(-5px);
+        }
+        .search-history {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .search-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: rgba(241, 241, 241, 0.7);
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            transform-origin: left;
+            border-left: 3px solid transparent;
+        }
+        .search-history-item:hover {
+            background-color: rgba(74, 107, 255, 0.1);
+            transform: translateX(5px) scale(1.02);
+            border-left: 3px solid #4a6bff;
+            box-shadow: 0 3px 10px rgba(74, 107, 255, 0.2);
+        }
+        .search-history-item .delete-history {
+            cursor: pointer;
+            color: #888;
+            transition: all 0.3s ease;
+        }
+        .search-history-item .delete-history:hover {
+            color: #f44336;
+            transform: rotate(90deg);
+            text-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+        }
+        .no-results {
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+            color: #888;
+            font-size: 13px;
+            padding: 10px;
+            background-color: rgba(255, 235, 235, 0.5);
+            border-radius: 8px;
+            transform: scale(0);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-left: 3px solid #f44336;
+        }
+        .no-results.show {
+            transform: scale(1);
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        h1.main-dashboard-text {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            font-size: 32px;
+        }
+        h1.main-dashboard-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        h1.main-dashboard-text:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(74, 107, 255, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border-radius: 20px;
+        }
+        a:hover::before {
+            opacity: 1;
+        }
+        /* Glowing effect for interactive elements */
+        .menu-icon, .close-icon, button, .sidebar-item, .dashboard-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-icon::after, .close-icon::after, button::after, .sidebar-item::after, .dashboard-item::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .menu-icon:hover::after, .close-icon:hover::after, button:hover::after, .sidebar-item:hover::after, .dashboard-item:hover::after {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#333" class="group-icon">
+            <path d="M12 5.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM5 12c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm14 0c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-7 3c2.67 0 8 1.34 8 4v1H4v-1c0-2.66 5.33-4 8-4z"/>
+        </svg>
+        <span class="main-dashboard-text">GatherUp</span>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-navbar">
+            <span class="sidebar-dashboard-text">Dashboard</span>
+            <span class="close-icon" onclick="toggleSidebar()">✕</span>
+        </div>
+        <a href="about_page.html" class="sidebar-item">About Page</a>
+        <a href="history.html" class="sidebar-item">History</a>
+        <a href="aprofile.html" class="sidebar-item">Profile</a>
+        <a href="settings.html" class="sidebar-item">Settings</a>
+        <a href="terms.html" class="sidebar-item">Terms</a>
+        <a href="#" class="sidebar-item" onclick="showLogoutPopup()">Logout</a>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="dashboard-container">
+            <h1 class="main-dashboard-text">Welcome to Admin Dashboard</h1>
+
+            <div id="dashboardItems">
+                <a href="event_approval.html">
+                <div class="event-approval-container">
+                    <img src="../static/images/event_approval.jpg" alt="Event Approval">
+                    <div class="event-approval-overlay">
+                        <span>Event Approval</span>
+                    </div>
+                </div>
+                </a>
+                <div class="event-analytics-container">
+                    <img src="../static/images/event_analytics.jpg" alt="Event Analytics">
+                    <div class="event-analytics-overlay">
+                        <span>Event Analytics</span>
+                    </div>
+                </div>
+                <a href="fevent_reports.html">
+                <div class="event-reports-container">
+                    <img src="../static/images/event_reports.jpg" alt="Event Reports">
+                    <div class="event-reports-overlay">
+                        <span>Event Reports</span>
+                    </div>
+                </div>
+                </a>
+                <a href="upcomingevents.html">
+                <div class="upcoming-events-container">
+                    <img src="../static/images/upcoming_events.jpg" alt="Upcoming Events">
+                    <div class="upcoming-events-overlay">
+                        <span>Upcoming Events</span>
+                    </div>
+                </div>
+                </a>
+<a href="chatroom.html">
+    <div class="venue-booking-container">
+        <img src="../static/images/chatbox.jpg" alt="Chat Box">
+        <div class="venue-booking-overlay">
+            <span>Chat Box</span>
+        </div>
+    </div>
+</a>
+
+              <a href="aalendar.html">
+                <div class="calendar-container">
+                    <img src="../static/images/calender.jpg" alt="Calendar">
+                    <div class="calendar-overlay">
+                        <span>Calendar</span>
+                    </div>
+                </div>
+              </a>  
+              <a href="venue_approval.html">
+                <div class="venue-booking-container">
+                    <img src="../static/images/venue_booking.jpg" alt="Venue Booking">
+                    <div class="venue-booking-overlay">
+                        <span>Venue Approval</span>
+                    </div>
+                </div>
+            </a>
+            </div>
+        </div>
+
+    <div id="logoutPopup" class="logout-popup">
+        <p>Are you sure you want to logout?<br>Logging out without saving your data may result in loss of your data</p>
+        <button class="yes" onclick="logout()">Yes</button>
+        <button class="no" onclick="hideLogoutPopup()">No</button>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mainContent").classList.toggle("shifted");
+        }
+
+        function showLogoutPopup() {
+            const popup = document.getElementById("logoutPopup");
+            popup.style.display = "block";
+            setTimeout(() => {
+                popup.classList.add("show");
+            }, 10);
+        }
+
+        function hideLogoutPopup() {
+            const popup = document.getElementById("logoutPopup");
+            popup.classList.remove("show");
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 400);
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const dashboardItems = document.getElementById('dashboardItems');
+            const containers = dashboardItems.getElementsByClassName('event-approval-container');
+            let found = false;
+
+            for (let container of containers) {
+                const containerText = container.querySelector('span').textContent.toLowerCase();
+                if (containerText.includes(searchTerm)) {
+                    container.style.display = 'inline-block';
+                    found = true;
+                } else {
+                    container.style.display = 'inline-block'; // Changed from 'none' to 'inline-block'
+                }
+            }
+
+            const noResults = document.getElementById('noResults');
+            noResults.style.display = found ? 'none' : 'block';
+            if (!found) {
+                setTimeout(() => {
+                    noResults.classList.add("show");
+                }, 10);
+            } else {
+                noResults.classList.remove("show");
+            }
+            
+            addToSearchHistory(searchTerm);
+        }
+
+        function addToSearchHistory(term) {
+            const searchHistory = document.getElementById('searchHistory');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'search-history-item';
+            historyItem.innerHTML = `
+                <span>${term}</span>
+                <span class="delete-history" onclick="deleteHistoryItem(this)">✕</span>
+            `;
+            historyItem.style.transform = "scale(0)";
+            searchHistory.appendChild(historyItem);
+            
+            setTimeout(() => {
+                historyItem.style.transform = "scale(1)";
+            }, 10);
+        }
+
+        function deleteHistoryItem(element) {
+            const item = element.parentElement;
+            item.style.transform = "translateX(50px)";
+            item.style.opacity = "0";
+            setTimeout(() => {
+                item.remove();
+            }, 300);
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>

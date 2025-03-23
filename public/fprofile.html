@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s ease;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .profile-container {
+            max-width: 800px;
+            width: 95%;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(15px);
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74,107,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .profile-container:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2.4em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 4px solid #4a6bff;
+            padding-bottom: 15px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(74, 107, 255, 0.3);
+            letter-spacing: 4px;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4a6bff 0%, #6a8fff 100%);
+            transition: width 0.5s ease;
+        }
+        h1:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px rgba(74, 107, 255, 0.5);
+        }
+        .profile-field {
+            margin-bottom: 25px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            overflow: hidden;
+        }
+        .profile-field:hover {
+            transform: translateX(8px);
+        }
+        .profile-field::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        .profile-field:hover::before {
+            left: 100%;
+        }
+        .profile-field label {
+            font-weight: 600;
+            width: 160px;
+            color: #34495e;
+            font-size: 1.15em;
+            margin-bottom: 8px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .profile-field:hover label {
+            color: #4a6bff;
+            transform: translateX(5px);
+        }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-color: #f8f9fa;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus {
+            outline: none;
+            border-color: #4a6bff;
+            box-shadow: 0 0 15px rgba(74,107,255,0.25);
+            background-color: white;
+            transform: scale(1.02);
+        }
+        .submit-btn {
+            background: linear-gradient(45deg, #4a6bff, #6a8fff);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 35px;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .submit-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #3a5bef, #5a7fef);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74,107,255,0.4);
+        }
+        .submit-btn:hover:before {
+            left: 100%;
+        }
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .submit-btn:hover::after {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        
+        /* Photo upload styles */
+        .photo-upload-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 35px;
+            gap: 30px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #e0e0e0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-upload-container:hover {
+            border-color: #4a6bff;
+            background-color: #f0f7f0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(74,107,255,0.1);
+        }
+        .photo-upload-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 107, 255, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+        .photo-upload-container:hover::before {
+            left: 100%;
+        }
+        .profile-photo-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .profile-photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .profile-photo-preview:hover img {
+            transform: scale(1.1);
+        }
+        .profile-photo-preview:hover {
+            box-shadow: 0 8px 25px rgba(74,107,255,0.3);
+            transform: scale(1.05);
+        }
+        .photo-upload-content {
+            flex: 1;
+            transition: transform 0.3s ease;
+        }
+        .photo-upload-container:hover .photo-upload-content {
+            transform: translateX(5px);
+        }
+        .photo-upload-content h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+        .photo-upload-container:hover .photo-upload-content h3 {
+            color: #4a6bff;
+        }
+        .photo-upload-content p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+        .photo-upload-container:hover .photo-upload-content p {
+            color: #34495e;
+        }
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input-label {
+            background: linear-gradient(45deg, #4a6bff, #6a8fff);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        .file-input-label:hover {
+            background: linear-gradient(45deg, #3a5bef, #5a7fef);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74,107,255,0.4);
+        }
+        .file-input-label::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        .file-input-label:hover::after {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        input[type="file"] {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #34495e;
+            transition: all 0.3s ease;
+        }
+        .photo-upload-container:hover .file-name {
+            color: #4a6bff;
+        }
+        .photo-requirements {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        .photo-upload-container:hover .photo-requirements {
+            color: #34495e;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .profile-container {
+                padding: 25px;
+                width: 100%;
+            }
+            .profile-field {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-field label {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            input[type="text"], input[type="email"], input[type="tel"] {
+                width: 100%;
+            }
+            .photo-upload-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-photo-preview {
+                margin: 0 auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>Faculty Profile</h1>
+        
+        <!-- Photo upload section -->
+        <div class="photo-upload-container">
+            <div class="profile-photo-preview">
+                <img id="photoPreview" src="" alt="Profile Preview" style="display: none;">
+                <div id="photoPlaceholder" style="color: #a0a0a0; font-size: 14px; text-align: center;">
+                    No photo<br>selected
+                </div>
+            </div>
+            <div class="photo-upload-content">
+                <h3>Faculty Photo</h3>
+                <p>Upload a professional photograph for your faculty profile.</p>
+                <div class="file-input-container">
+                    <label class="file-input-label" for="profilePhoto">Choose Photo</label>
+                    <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*">
+                </div>
+                <div id="fileName" class="file-name"></div>
+                <div class="photo-requirements">
+                    Recommended: Professional attire, plain background, JPG or PNG format, max 5MB
+                </div>
+            </div>
+        </div>
+        
+        <form id="facultyProfileForm">
+            <div class="profile-field">
+                <label>Name:</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="profile-field">
+                <label>Email:</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="profile-field">
+                <label>Department:</label>
+                <input type="text" name="department" required>
+            </div>
+            <div class="profile-field">
+                <label>Contact no:</label>
+                <input type="tel" name="contact" required>
+            </div>
+            <div class="profile-field">
+                <label>Designation:</label>
+                <input type="text" name="designation" required>
+            </div>
+            <button type="submit" class="submit-btn">Save Profile</button>
+        </form>
+    </div>
+
+    <script>
+        // Photo preview functionality
+        document.getElementById('profilePhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('photoPlaceholder').style.display = 'none';
+                    document.getElementById('fileName').textContent = file.name;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission with animation
+        document.getElementById('facultyProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Add animation to the submit button
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.style.transform = 'scale(0.95)';
+            submitBtn.style.boxShadow = '0 2px 10px rgba(74,107,255,0.3)';
+            
+            setTimeout(() => {
+                submitBtn.style.transform = '';
+                submitBtn.style.boxShadow = '';
+                
+                // Here you would typically send the form data to your server
+                alert('Faculty profile saved successfully!');
+                // For actual implementation, you'd replace the alert with your submission logic
+            }, 300);
+        });
+        
+        // Add subtle animation to input fields when focused
+        const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateX(5px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.style.transform = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
